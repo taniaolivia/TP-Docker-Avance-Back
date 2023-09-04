@@ -1,20 +1,29 @@
-# Pull l'image officielle de node
+# Utilisez une image officielle de node
 FROM node:latest
 
-# Copie le package.json dans le projet
+# Créez un utilisateur non root (remplacez `counia` par le nom de votre choix)
+RUN useradd -m counia
+
+# Copiez le package.json dans le projet
 COPY src/package.json ./
 
-# Création de répertoire
-WORKDIR /home/node/app
+# Créez un répertoire pour l'application
+WORKDIR /home/counia/app
 
-# Copie le répertoire
-COPY ./ /home/node/app
+# Copiez le répertoire de l'application dans le conteneur
+COPY ./ /home/counia/app
 
-# Installation des packages npm
+# Assurez-vous que l'utilisateur non root possède les droits sur le répertoire
+RUN chown -R counia:counia /home/counia/app
+
+# Passez à l'utilisateur non root
+USER counia
+
+# Installez les packages npm
 RUN npm install
 
-# Définir le port
+# Définissez le port
 EXPOSE 4000
 
-# Lancer le projet
+# Lancez le projet
 CMD npm start
