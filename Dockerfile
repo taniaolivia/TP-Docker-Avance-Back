@@ -1,29 +1,36 @@
-# Utilisez une image officielle de node
+# Utilisez une image officielle de Node.js
 FROM node:latest
 
-# Créez un utilisateur non root (remplacez `counia` par le nom de votre choix)
-RUN useradd -m counia
+# Créez un groupe nommé 'admins'
+RUN groupadd -g 999 admins
+
+# Créez un utilisateur non root nommé 'counia' et ajoutez-le au groupe 'admins'
+RUN useradd -m -u 1001 counia
+RUN usermod -aG admins counia
+
+# Créez un répertoire pour l'application
+RUN mkdir -p /home/counia/app
+
+# Utilisez le répertoire comme répertoire de travail
+WORKDIR /home/counia/app
 
 # Copiez le package.json dans le projet
 COPY src/package.json ./
 
-# Créez un répertoire pour l'application
-WORKDIR /home/counia/app
-
-# Copiez le répertoire de l'application dans le conteneur
+# Copiez le reste du code de l'application dans le conteneur
 COPY ./ /home/counia/app
 
-# Assurez-vous que l'utilisateur non root possède les droits sur le répertoire
+# Assurez-vous que l'utilisateur 'counia' possède les droits sur le répertoire de l'application
 RUN chown -R counia:counia /home/counia/app
 
-# Passez à l'utilisateur non root
+# Passez à l'utilisateur 'counia'
 USER counia
 
 # Installez les packages npm
 RUN npm install
 
-# Définissez le port
-EXPOSE 4000
+# Exposez le port 3000 pour votre application
+EXPOSE 3000
 
 # Lancez le projet
-CMD npm start
+CMD ["npm", "start"]
