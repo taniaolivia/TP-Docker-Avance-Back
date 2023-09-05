@@ -1,10 +1,13 @@
 # Utilisez une image officielle de Node.js
 FROM node:latest
 
-# Créez un groupe nommé 'admins'
+# Supprimez et créez un groupe nommé 'admins'
+USER root
+RUN groupdel admins || true
 RUN groupadd -g 999 admins
 
-# Créez un utilisateur non root nommé 'counia' et ajoutez-le au groupe 'admins'
+# Supprimez et créez un utilisateur non root nommé 'counia' et ajoutez-le au groupe 'admins'
+RUN userdel counia || true
 RUN useradd -m -u 1001 counia
 RUN usermod -aG admins counia
 
