@@ -1,0 +1,3 @@
+ARG ELASTICSEARCH_VERSION
+
+FROM docker.elastic.co/beats/filebeat:${ELASTICSEARCH_VERSION}
