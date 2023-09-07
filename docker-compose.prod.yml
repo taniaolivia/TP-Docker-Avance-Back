@@ -10,14 +10,12 @@ services:
     env_file:
       - .env
     ports:
-      - 80
-    volumes:
+      - "3000:3000"
       - './src:/home/counia/app' 
     links:
       - mongo
     networks:
       - back
-
 
   mongo:
     image: mongo
@@ -59,9 +57,9 @@ services:
   nginx:
     container_name: nginx
     image: nginx
-    build: ./nginx
     volumes:
       - server_volume:/home/src/app/web/staticfiles
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro # Chemin vers votre fichier de configuration NGINX
     ports:
       - "8080:80"
     depends_on:
