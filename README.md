@@ -4,65 +4,64 @@
 - Coumba DIANKHA
 - Tania OLIVIA
 
-# Mon Projet Docker avec React, Node.js, et MongoDB
+# Bienvenue dans notre projet Node.js avec MongoDB
 
-Bienvenue dans notre projet TP_Docker qui utilise React pour le front-end, Node.js (avec Express) pour le back-end, et MongoDB pour la base de données. Ce projet est configuré pour fonctionner dans des conteneurs Docker pour une gestion facile et une isolation des composants.
+Salut ! Nous sommes ravis de vous accueillir dans notre projet Node.js utilisant MongoDB. Dans ce README, nous allons vous guider à travers les étapes nécessaires pour configurer, construire et exécuter le projet. Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter.
 
-## Structure du Projet
+## Avant de commencer
 
-Le projet est structuré de la manière suivante :
+### Configuration du fichier .env
 
+Avant de plonger dans le projet, veuillez effectuer les étapes suivantes :
 
-client/ # Code source React (front-end)
-Dockerfile # Configuration Docker pour le front-end
-server/ # Code source Node.js (back-end)
-Dockerfile # Configuration Docker pour le back-end
+1. Créez un fichier `.env` à la racine du projet (à l'endroit où se trouve ce fichier README) et copiez-collez le contenu du fichier `.env.sample` ci-dessous. Assurez-vous de remplir les valeurs appropriées.
 
-docker-compose.yml # Configuration Docker Compose pour l'environnement de développement
-README.md # Ce fichier README
+```env
+# Configuration Node.js
+NODE_ENV=development
+PORT=3000
 
+# Configuration MongoDB
+MONGO_URI=mongodb://localhost:27017/mydatabase
 
-## Prérequis
+# Autres variables d'environnement
+DEBUG=true
+ALLOWED_HOSTS=localhost,127.0.0.1
+LOG_LEVEL=debug
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+## Comment construire et exécuter
+Suivez les étapes ci-dessous pour construire et exécuter le projet :
 
-## Utilisation
+1. Construction et exécution
 
-1. Clonez ce dépôt sur votre machine :
+Utilisez la commande suivante pour construire le projet et démarrer le conteneur en mode détaché :
 
-   ```bash
-   git clone https://github.com/votre-utilisateur/mon-projet-docker.git
-   cd mon-projet-docker
+    docker-compose up --build -d
 
-2. Créez un fichier .env à la racine du projet pour définir vos variables d'environnement sensibles. Vous pouvez utiliser le fichier .env.example comme modèle.
+2. Accès à MongoDB via CLI
 
-3. Démarrez l'environnement de développement avec Docker Compose :
+Vous pouvez utiliser Docker pour exécuter la commande suivante et vous connecter à la base de données MongoDB via votre terminal :
 
-    docker-compose up
+    docker exec -it mongodb mongo -u <username> -p <password> <database>
 
-Accédez à votre application front-end dans un navigateur à l'adresse http://localhost:0000.
+## Comment cela fonctionne
 
-L'API back-end est accessible à l'adresse http://localhost:3000.
+# Environnement de développement
 
-## Configuration de la Base de Données
+Notre environnement de développement est configuré pour vous offrir une expérience de développement fluide. Il inclut des conteneurs MongoDB pour gérer les données. Une fois que l'environnement de développement est opérationnel, vous pouvez accéder à l'application via l'URL suivante : http://localhost:3000
 
-Ce projet utilise MongoDB comme base de données. Vous pouvez personnaliser la configuration de la base de données MongoDB dans le fichier .env.
+# Environnement de production
 
-## Docker Compose
+À l'avenir, nous prévoyons de déplacer les conteneurs ELK (Elasticsearch, Logstash, Kibana) de l'environnement de développement vers l'environnement de production.
 
-Le fichier docker-compose.yml configure l'environnement de développement avec des conteneurs pour le front-end, le back-end, et la base de données MongoDB. Assurez-vous de personnaliser ce fichier en fonction de vos besoins.
+# Vérification de la base de données
+Peu importe l'environnement que vous utilisez, assurez-vous de tester la base de données en appelant l'une des routes suivantes :
 
-## Contribuer
+-Environnement de développement : http://localhost:3000/docker
+-Environnement de production : http://localhost:8000/docker
 
-1. Créez une branche pour vos fonctionnalités ou corrections de bogues : git checkout -b ma-fonctionnalite
+Cela entraînera la création et l'insertion d'une entité dans la base de données. Si la base de données a été créée avec succès lors de la construction, vous recevrez une réponse JSON confirmant la réussite.
 
-2. Faites vos modifications et commit : git commit -m "Ajouter une nouvelle fonctionnalité"
+Nous espérons que cette expérience de développement sera agréable et productive. N'hésitez pas à personnaliser ce projet en fonction de vos besoins spécifiques et à explorer toutes les possibilités offertes par Node.js et MongoDB.
 
-3. Poussez vos modifications vers votre branche : git push origin ma-fonctionnalite
-
-4. Créez une Pull Request (PR) vers la branche principale.
-
-## Environnement de Production
-
-Pour déployer ce projet en production, vous devrez configurer un environnement de production sécurisé, gérer les variables d'environnement sensibles, et mettre en place un service de journalisation comme ELK pour surveiller votre application en production.
+Merci de faire partie de notre projet ! 😄
