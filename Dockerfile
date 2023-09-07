@@ -32,7 +32,7 @@ USER counia
 # Installez les packages npm
 RUN npm install
 
-# Exposez le port 3000 pour votre application
+# Exposez le port 3000 pour l'application
 EXPOSE 3000
 
 # Lancez le projet
