@@ -25,7 +25,12 @@ app.use(express.json());
 
 // Définition de la route "Hello, World!"
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
+  res.send('<html><body><h1>Hello, World!</h1></body></html>');
+});
+
+// Définition de la route "Hello, World!"
+app.get('/test', (req, res) => {
+  res.send('<html><body><h1>Hello, World!</h1></body></html>');
 });
 
 // Écoute du serveur sur le port spécifié
