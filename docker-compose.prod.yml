@@ -11,6 +11,7 @@ services:
       - .env
     ports:
       - "3000:3000"
+    volumes:
       - './src:/home/counia/app' 
     links:
       - mongo
@@ -57,6 +58,7 @@ services:
   nginx:
     container_name: nginx
     image: nginx
+    build: ./nginx
     volumes:
       - server_volume:/home/src/app/web/staticfiles
       - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro # Chemin vers votre fichier de configuration NGINX
