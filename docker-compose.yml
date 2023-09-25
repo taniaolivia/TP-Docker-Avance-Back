@@ -1,0 +1,133 @@
+version: '3.3'
+services:
+  node:
+    container_name: node
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: 'node:latest'
+    working_dir: /home/counia/app
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    volumes:
+      - './src:/home/counia/app' 
+    links:
+      - mongo
+    networks:
+      - back
+
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    restart: always
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo_volume:/data/db
+    working_dir: /data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - back
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    container_name: mongo_express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: ${ME_CONFIG_MONGODB_SERVER}
+      ME_CONFIG_MONGODB_AUTH_DATABASE: ${ME_CONFIG_MONGODB_AUTH_DATABASE}
+      ME_CONFIG_MONGODB_AUTH_USERNAME: ${ME_CONFIG_MONGODB_AUTH_USERNAME}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${ME_CONFIG_MONGODB_AUTH_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
+    ports:
+      - '8081:8081'
+    depends_on:
+      - mongo
+    networks:
+      - back
+
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data/
+    networks:
+      - back
+
+  logstash:
+    image: logstash:${LOGSTASH_VERSION}
+    container_name: logstash
+    volumes:
+      - ./logstash/:/logstash/:ro
+    command: logstash -f /logstash/logstash.conf
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+    networks:
+      - back
+
+  kibana:
+    image: kibana:${KIBANA_VERSION}
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - back
+
+  filebeat:
+    container_name: filebeat
+    image: filebeat:latest
+    user: root
+    build:
+      context: .
+      dockerfile: filebeat/Dockerfile
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+    volumes:
+      - ./filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml:ro
+      - logs_volume:/home/src/app/logs
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+    command: filebeat -e -c /usr/share/filebeat/filebeat.yaml -strict.perms=false
+    depends_on:
+      - node
+      - elasticsearch
+      - kibana
+    networks:
+      - back
+
+volumes:
+  logs_volume:
+  mongo_volume:
+  elasticsearch_data:
+
+networks:
+  back:
+    driver: bridge

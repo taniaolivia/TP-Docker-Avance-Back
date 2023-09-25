@@ -1,0 +1,29 @@
+{
+  "name": "tpdockeravanceback",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "watch": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mkdir -p ./build && cross-env NODE_ENV=production node src/app.js"
+  },
+  "author": "Tania Olivia, Coumba Diankha",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taniaolivia/TP-Docker-Avance-Back.git"
+  },
+  "bugs": {
+    "url": "https://github.com/taniaolivia/TP-Docker-Avance-Back/issues"
+  },
+  "homepage": "https://github.com/taniaolivia/TP-Docker-Avance-Back#readme",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^6.7.2",
+    "nodemon": "^2.0.20",
+    "cross-env": "^7.0.3"
+  }
+}
